@@ -10,7 +10,7 @@ game_logic = None
 
 # "lamda": 0.01, "decay_rate": 0.95, "epsilone": 0.5, "learning_rate": 0.3
 params = {
-    "lamda": 0.01, "decay_rate": 0.9, "epsilone": 0.95, "learning_rate": 0.01
+    "lamda": 0.1, "decay_rate": 1, "epsilone": 0.95, "learning_rate": 0.2
 }
 
 print(sys.argv)
@@ -18,9 +18,9 @@ print(sys.argv)
 if len(sys.argv) == 3 and sys.argv[1] == "resume":
     sarsa = Sarsa.load(sys.argv[-1])
 else:
-    game_logic = gl.Game(10, 10, position=np.array([2, 8]), enemy_positions=np.array([[5, 5], [ 1, 3], [7, 4], [0, 8]]))
+    game_logic = gl.Game(10, 10, position=np.array([1, 8]), enemy_positions=np.array([[6, 6], [ 7, 5]]))
     # sarsa = Sarsa(game_logic, [10, 10, 10, 10], 4, **params)
-    sarsa = Sarsa(game_logic, [20, 8, 8, 8, 8, 2], 4, **params)
+    sarsa = Sarsa(game_logic, [20, 20, 8, 8], 4, **params)
 
 
 
@@ -47,7 +47,7 @@ for k in range(1, 30000):
         print("length won", running_won_episode_length/running_won)
         print("epsilone", sarsa.epsilone)
         print("progress", k/30000)
-
+        sarsa.loss_length_wonlength.append((running_loss, running_episode_length/print_every, running_won_episode_length/running_won))
         print("----")
 
         running_loss = 0

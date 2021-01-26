@@ -14,7 +14,8 @@ class Sarsa:
         self.decay_rate = decay_rate
         self.lamda = lamda
         self.num_actions = num_actions
-        self.step = 0
+        self.step = 5
+        self.loss_length_wonlength = []
         # self.Q_table["Q"] = np.random.sample(self.Q_table["Q"].shape)
      
     # def get_state(self):
@@ -26,17 +27,15 @@ class Sarsa:
         
         l1_norms = np.linalg.norm(direction_vectors, ord=np.inf, axis=1)
 
-        mode = 0
         if np.all(l1_norms > 1):
-            return (l1_exit, *np.zeros(self.game.enemy_positions.shape[0], dtype=int), 0)
+            return (l1_exit, l1_exit, *np.zeros(self.game.enemy_positions.shape[0], dtype=int))
     
 
         angles = np.angle(direction_vectors[:, 0] + np.complex(0,1)*direction_vectors[:, 1])
         angles[angles<0] += (np.pi * 2)
         angles = (angles//(np.pi/4)).astype(int)
-
-        return (0, *angles, 1)
-
+        angles = np.sort(angles)
+        return (19, 19, *angles)
 
     def episode_update(self):
         self.game.reset()
@@ -70,8 +69,8 @@ class Sarsa:
             #     print(episode_length)
             #     print(actions)
 
-        self.step += 1
-        self.epsilone = self.linear_decay(40000)/4
+        # self.step += 1
+        # self.epsilone = self.linear_decay(40000)/4
         return episode_length, enemy_hit
 
     def update_q_e(self, delta):
@@ -84,19 +83,20 @@ class Sarsa:
         q_values = self.Q_table[state]["Q"]
         max_q_action_index = np.argmax(self.Q_table[state]["Q"])
         greedy = np.random.binomial(1, 1-self.epsilone) == 1
-        if greedy:
-            return int(max_q_action_index)
-        else:
-            actions = list(range(0, max_q_action_index)) + list(range(max_q_action_index+1, self.num_actions))
-            return int(np.random.choice(actions))
+        return int(max_q_action_index)
+        # if greedy:
+        #     return int(max_q_action_index)
+        # else:
+        #     actions = list(range(0, max_q_action_index)) + list(range(max_q_action_index+1, self.num_actions))
+        #     return int(np.random.choice(actions))
 
 
     def get_reward(self, won, enemy_hit):
         # distance_score = -np.linalg.norm(self.game.exit_positions[0]-self.game.player_position, ord= np.inf)
         if won:
-            return 100
+            return 0
         elif enemy_hit:
-            return -10
+            return -30
         else:
             return -1
 

@@ -15,11 +15,12 @@ class Bots_logic1:
         self.directions = [Game.actions_to_directions[np.random.choice(Game.actions)] for _ in range(self.positions.shape[0])]
 
     def move(self):
-        if self.index == 2:
-            self.index = 0
-            self.chose_random_directions()
+        # if self.index == 2:
+        #     self.index = 0
+        #     self.chose_random_directions()
 
-        self.index += 1
+        # self.index += 1
+        self.chose_random_directions()
         np.add(self.positions, self.directions, out=self.positions)
 
         mask = self.positions < 0
